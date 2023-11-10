@@ -6,11 +6,7 @@ import { twMerge } from "tailwind-merge"
 
 import { createPost, getSignedURL } from "./actions"
 
-export default function CreatePostForm({
-  user,
-}: {
-  user: { name?: string | null; image?: string | null }
-}) {
+export default function CreatePostForm({ user }: { user: { name?: string | null; image?: string | null } }) {
   const [content, setContent] = useState("")
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -35,10 +31,9 @@ export default function CreatePostForm({
       checksum: await computeSHA256(file),
     })
     if (signedURLResult.failure !== undefined) {
-      console.error(signedURLResult.failure)
-      return
+      throw new Error(signedURLResult.failure)
     }
-    const { url, id: imageId } = signedURLResult.success
+    const { url, id: fileId } = signedURLResult.success
     await fetch(url, {
       method: "PUT",
       headers: {
@@ -47,25 +42,25 @@ export default function CreatePostForm({
       body: file,
     })
 
-    const imageUrl = url.split("?")[0]
-    return imageId
+    const fileUrl = url.split("?")[0]
+    return fileId
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     try {
-      let imageId: number | undefined = undefined
+      let fileId: number | undefined = undefined
       if (file) {
         setStatusMessage("Uploading...")
-        imageId = await handleFileUpload(file)
+        fileId = await handleFileUpload(file)
       }
 
       setStatusMessage("Posting post...")
 
       await createPost({
         content,
-        imageId: imageId,
+        fileId: fileId,
       })
 
       setStatusMessage("Post Successful")
@@ -124,9 +119,13 @@ export default function CreatePostForm({
               />
             </label>
 
-            {previewUrl && (
+            {previewUrl && file && (
               <div className="mt-4">
-                <img src={previewUrl} alt="Selected file" />
+                {file.type.startsWith("image/") ? (
+                  <img src={previewUrl} alt="Selected file" />
+                ) : file.type.startsWith("video/") ? (
+                  <video src={previewUrl} controls />
+                ) : null}
               </div>
             )}
 

@@ -31,10 +31,10 @@ import crypto from "crypto"
 
 export async function createPost({
   content,
-  imageId,
+  fileId,
 }: {
   content: string
-  imageId?: number
+  fileId?: number
 }): Promise<{ failure: string } | undefined> {
   const session = await auth()
 
@@ -46,11 +46,11 @@ export async function createPost({
     return { failure: "not enough content" }
   }
 
-  if (imageId) {
+  if (fileId) {
     const result = await db
       .select({ id: mediaTable.id })
       .from(mediaTable)
-      .where(and(eq(mediaTable.id, imageId), eq(mediaTable.userId, session.user.id)))
+      .where(and(eq(mediaTable.id, fileId), eq(mediaTable.userId, session.user.id)))
       .then((rows) => rows[0])
 
     if (!result) {
@@ -66,8 +66,8 @@ export async function createPost({
     })
     .returning()
 
-  if (imageId) {
-    await db.update(mediaTable).set({ postId: results[0].id }).where(eq(mediaTable.id, imageId))
+  if (fileId) {
+    await db.update(mediaTable).set({ postId: results[0].id }).where(eq(mediaTable.id, fileId))
   }
 
   revalidatePath("/")
@@ -77,11 +77,11 @@ export async function createPost({
 const allowedFileTypes = [
   "image/jpeg",
   "image/png",
-  "image/gif",
-  // Add any other file types you want to allow
+  "video/mp4",
+  "video/quicktime"
 ]
 
-const maxFileSize = 1048576 // 1 MB
+const maxFileSize = 1048576 * 10 // 1 MB
 
 const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString("hex")
 
@@ -135,7 +135,7 @@ export const getSignedURL = async ({
   const results = await db
     .insert(mediaTable)
     .values({
-      type: "image",
+      type: fileType.startsWith("image") ? "image" : "video",
       url: url.split("?")[0],
       width: 0,
       height: 0,

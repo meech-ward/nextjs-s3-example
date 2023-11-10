@@ -14,15 +14,16 @@ export default function SinglePost({ post }: { post: Post }) {
       return (
         <Link href={post.media.url}>
           <div className="rounded-xl w-fill aspect-square relative overflow-hidden">
-            <Image
-              className="object-cover"
-              src={post.media.url}
-              alt={post.content}
-              // width={post.media.width}
-              // height={post.media.height}
-              fill={true}
-            />
+            <Image className="object-cover" src={post.media.url} alt={post.content} fill={true} />
           </div>
+        </Link>
+      )
+    }
+
+    if (post.media.type === "video") {
+      return (
+        <Link href={post.media.url}>
+          <video className="object-contain max-w-full" src={post.media.url} controls />
         </Link>
       )
     }
@@ -47,9 +48,7 @@ export default function SinglePost({ post }: { post: Post }) {
             <Link href={`/${post.user.id}`}>
               <div>{post.user.name}</div>
             </Link>
-            <p className="dark:text-neutral-400 text-neutral-600">
-              {timeAgoShort(new Date(post.createdAt))}
-            </p>
+            <p className="dark:text-neutral-400 text-neutral-600">{timeAgoShort(new Date(post.createdAt))}</p>
           </div>
         </div>
       </div>
