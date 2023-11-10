@@ -1,0 +1,50 @@
+{
+  "name": "xclone",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "migration:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg"
+  },
+  "dependencies": {
+    "@auth/core": "^0.18.0",
+    "@auth/drizzle-adapter": "^0.3.5",
+    "@aws-sdk/client-s3": "^3.445.0",
+    "@aws-sdk/s3-request-presigner": "^3.445.0",
+    "@libsql/client": "^0.3.6",
+    "@neondatabase/serverless": "^0.6.0",
+    "@types/node": "20.6.2",
+    "@types/react": "18.2.21",
+    "@types/react-dom": "18.2.7",
+    "autoprefixer": "10.4.15",
+    "aws4fetch": "^1.0.17",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.0",
+    "drizzle-valibot": "^0.1.1",
+    "eslint": "8.49.0",
+    "eslint-config-next": "13.4.19",
+    "might-fail": "^0.2.0",
+    "next": "^14.0.1",
+    "next-auth": "5.0.0-beta.3",
+    "next-safe-action": "^5.0.2",
+    "pg": "^8.11.3",
+    "postcss": "8.4.29",
+    "postgres": "^3.4.2",
+    "react": "^18.2.0",
+    "react-dom": "18.2.0",
+    "sql-formatter": "^13.0.4",
+    "sql-log-prettifier": "^0.1.2",
+    "tailwind-merge": "^1.14.0",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.2.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "drizzle-kit": "latest"
+  }
+}
